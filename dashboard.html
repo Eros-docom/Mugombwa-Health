@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Staff Dashboard | Health Centre</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            margin: 0;
+            background: #f4f7fb;
+            font-family: Arial, sans-serif;
+            color: #243247;
+        }
+
+        .header {
+            background: #123c73;
+            color: white;
+            padding: 15px 4%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: #55c7e8;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: #55c7e8;
+        }
+
+        .notification {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 9px 12px;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #123c73;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .notification-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 4px;
+            border-radius: 50px;
+            background: #d9534f;
+            color: white;
+            font-size: 12px;
+        }
+
+        .notification-count.zero {
+            display: none;
+        }
+
+        .logout {
+            background: #d9534f;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .logout:hover {
+            background: #bd3632;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 16px;
+        }
+
+        .welcome,
+        .panel,
+        .announcement {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        h1, h2 {
+            color: #123c73;
+        }
+
+        .announcement {
+            border-left: 5px solid #55c7e8;
+        }
+
+        .announcement h3 {
+            margin-top: 0;
+            color: #123c73;
+        }
+
+        .announcement button {
+            background: #123c73;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 9px 12px;
+            cursor: pointer;
+        }
+
+        .announcement.read {
+            border-left-color: #aab5c4;
+        }
+
+        .announcement.read .read-label {
+            color: #65748b;
+            font-size: 12px;
+        }
+
+        .muted {
+            color: #65748b;
+            font-size: 13px;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            background: #eef5ff;
+            margin-top: 15px;
+            overflow-wrap: anywhere;
+        }
+
+        .error {
+            background: #fff0f0;
+            color: #a11;
+            padding: 12px;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        footer {
+            text-align: center;
+            padding: 22px;
+            color: #65748b;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        @media (max-width: 850px) {
+            .header {
+                align-items: flex-start;
+            }
+
+            .header-right {
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .nav-menu {
+                gap: 12px;
+            }
+
+            .nav-menu a {
+                font-size: 13px;
+            }
+
+            .container {
+                margin-top: 20px;
+            }
+
+            .welcome, .panel, .announcement {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="logo">Health<span>Centre</span></div>
+
+    <div class="header-right">
+
+        <nav class="nav-menu">
+            <a href="index.html">Home</a>
+            <a href="dashboard.html" class="active">Staff Dashboard</a>
+            <a href="handover.html">Shift Handover</a>
+            <a href="report.html">Report Issue</a>
+            <a href="contact.html">Contact</a>
+            <a href="admin.html">Admin</a>
+        </nav>
+
+        <button class="notification" id="notificationBtn" hidden
+                type="button" aria-label="Unread announcements">
+            🔔 Notifications
+            <span class="notification-count" id="notificationCount">0</span>
+        </button>
+
+        <button class="logout" id="logoutBtn" hidden type="button">
+            Log Out
+        </button>
+
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="welcome">
+        <h1>Staff Dashboard</h1>
+
+        <p>Welcome to the Health Centre Staff Portal.</p>
+
+        <p>
+            Read important announcements from your health centre.
+            Open an announcement to mark it as read.
+        </p>
+
+        <div class="status" id="accountInfo">
+            Checking your account...
+        </div>
+    </section>
+
+    <section class="panel" id="announcementsSection">
+
+        <h2>Health Centre Announcements</h2>
+
+        <p class="muted">
+            Only published announcements from your health centre
+            are shown here.
+        </p>
+
+        <div id="announcementList">
+            Loading announcements...
+        </div>
+
+    </section>
+
+</main>
+
+<footer>© 2026 Health Centre Staff Portal</footer>
+
+<script type="module">
+    import { auth, db } from "./firebase.js";
+
+    import {
+        onAuthStateChanged,
+        signOut
+    } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+    import {
+        doc,
+        getDoc,
+        setDoc,
+        collection,
+        query,
+        where,
+        getDocs,
+        arrayUnion
+    } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+    const accountInfo = document.getElementById("accountInfo");
+    const announcementList = document.getElementById("announcementList");
+    const notificationBtn = document.getElementById("notificationBtn");
+    const notificationCount = document.getElementById("notificationCount");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    let currentUser = null;
+    let currentCentreId = null;
+    let announcements = [];
+    let readIds = [];
+    let loading = false;
+
+    logoutBtn.addEventListener("click", async () => {
+        logoutBtn.disabled = true;
+
+        try {
+            await signOut(auth);
+            window.location.href = "login.html";
+        } catch (error) {
+            console.error(error);
+            logoutBtn.disabled = false;
+            alert("Could not log out. Please try again.");
+        }
+    });
+
+    notificationBtn.addEventListener("click", () => {
+        document.getElementById("announcementsSection")
+            .scrollIntoView({ behavior: "smooth" });
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        if (loading) return;
+        loading = true;
+
+        currentUser = user;
+        logoutBtn.hidden = false;
+
+        try {
+            const roleSnap = await getDoc(
+                doc(db, "userRoles", user.uid)
+            );
+
+            if (!roleSnap.exists()) {
+                accountInfo.textContent =
+                    "Your account role was not found. Contact the administrator.";
+                announcementList.textContent = "";
+                return;
+            }
+
+            const role = roleSnap.data();
+
+            if (role.role !== "staff" || role.status !== "active") {
+                accountInfo.textContent =
+                    "This page is for active Staff accounts only.";
+                announcementList.textContent = "";
+                return;
+            }
+
+            if (!role.centreId) {
+                accountInfo.textContent =
+                    "No health centre is assigned to your account.";
+                announcementList.textContent = "";
+                return;
+            }
+
+            const centreSnap = await getDoc(
+                doc(db, "healthCentres", role.centreId)
+            );
+
+            if (!centreSnap.exists() ||
+                centreSnap.data().status !== "active") {
+                accountInfo.textContent =
+                    "Your health centre is not active.";
+                announcementList.textContent = "";
+                return;
+            }
+
+            currentCentreId = role.centreId;
+
+            accountInfo.textContent =
+                "Logged in as: " + (user.email || "Staff") +
+                " | Health Centre: " +
+                (centreSnap.data().name || "Health Centre");
+
+            notificationBtn.hidden = false;
+
+            await loadReadIds();
+            await loadAnnouncements();
+
+        } catch (error) {
+            console.error(error);
+            accountInfo.textContent =
+                "We could not verify your account.";
+
+            showError(
+                "Unable to load dashboard: " +
+                (error.code || error.message)
+            );
+        } finally {
+            loading = false;
+        }
+    });
+
+    async function loadReadIds() {
+        // Each user has their own read list.
+        const readRef = doc(
+            db,
+            "announcementReads",
+            currentUser.uid
+        );
+
+        const readSnap = await getDoc(readRef);
+
+        readIds = readSnap.exists()
+            ? (readSnap.data().readIds || [])
+            : [];
+    }
+
+    async function loadAnnouncements() {
+        announcementList.textContent = "Loading announcements...";
+
+        const announcementsQuery = query(
+            collection(db, "announcements"),
+            where("centreId", "==", currentCentreId),
+            where("published", "==", true)
+        );
+
+        const snapshot = await getDocs(announcementsQuery);
+
+        announcements = snapshot.docs.map((item) => ({
+            id: item.id,
+            ...item.data()
+        }));
+
+        updateNotificationCount();
+        renderAnnouncements();
+    }
+
+    function updateNotificationCount() {
+        const unreadCount = announcements.filter(
+            item => !readIds.includes(item.id)
+        ).length;
+
+        notificationCount.textContent = unreadCount;
+        notificationCount.classList.toggle(
+            "zero",
+            unreadCount === 0
+        );
+
+        notificationBtn.setAttribute(
+            "aria-label",
+            unreadCount + " unread announcements"
+        );
+    }
+
+    function renderAnnouncements() {
+        announcementList.replaceChildren();
+
+        if (announcements.length === 0) {
+            announcementList.textContent =
+                "There are no published announcements for your health centre yet.";
+            return;
+        }
+
+        announcements.forEach((item) => {
+            const isRead = readIds.includes(item.id);
+
+            const card = document.createElement("article");
+            card.className = "announcement" + (isRead ? " read" : "");
+
+            const heading = document.createElement("h3");
+            heading.textContent = item.title || "Announcement";
+
+            const message = document.createElement("p");
+            message.textContent = item.message || "";
+
+            const readLabel = document.createElement("p");
+            readLabel.className = "read-label";
+            readLabel.textContent = isRead ? "✓ Read" : "● Unread";
+
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = isRead ? "Already Read" : "Mark as Read";
+            button.disabled = isRead;
+
+            button.addEventListener("click", async () => {
+                button.disabled = true;
+                button.textContent = "Saving...";
+
+                try {
+                    const readRef = doc(
+                        db,
+                        "announcementReads",
+                        currentUser.uid
+                    );
+
+                    // Add this announcement ID to the user's read list.
+                    await setDoc(
+                        readRef,
+                        {
+                            readIds: arrayUnion(item.id)
+                        },
+                        { merge: true }
+                    );
+
+                    if (!readIds.includes(item.id)) {
+                        readIds.push(item.id);
+                    }
+
+                    updateNotificationCount();
+                    renderAnnouncements();
+
+                } catch (error) {
+                    console.error(error);
+                    button.disabled = false;
+                    button.textContent = "Mark as Read";
+
+                    alert(
+                        "Could not save read status. Check Firestore Rules. " +
+                        (error.code || error.message)
+                    );
+                }
+            });
+
+            card.appendChild(heading);
+            card.appendChild(message);
+            card.appendChild(readLabel);
+
+            if (!isRead) {
+                card.appendChild(button);
+            }
+
+            announcementList.appendChild(card);
+        });
+    }
+
+    function showError(message) {
+        const box = document.createElement("div");
+        box.className = "error";
+        box.textContent = message;
+        announcementList.replaceChildren(box);
+    }
+</script>
+
+</body>
+</html>

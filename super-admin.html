@@ -1,0 +1,935 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin | Health Centre</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #243247;
+        }
+
+        header {
+            background: #123c73;
+            color: white;
+            padding: 22px 16px;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        header h1 { margin: 0 0 6px; font-size: 24px; }
+        header p { margin: 0; color: #dbeafe; }
+
+        main {
+            max-width: 1100px;
+            margin: 28px auto;
+            padding: 0 16px;
+        }
+
+        section, .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 22px;
+            box-shadow: 0 3px 14px #123c7310;
+        }
+
+        h2, h3 { color: #123c73; }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 15px 0 7px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 16px;
+            background: white;
+        }
+
+        button {
+            border: 0;
+            border-radius: 7px;
+            padding: 11px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 4px 3px 4px 0;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .logout { background: white; color: #123c73; }
+        .primary { background: #123c73; color: white; margin-top: 18px; }
+        .secondary { background: #e8eef7; color: #123c73; }
+        .danger { background: #fee2e2; color: #991b1b; }
+        .success-button { background: #dcfce7; color: #166534; }
+
+        .status {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #075985;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .status.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status.suspended {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status.unknown {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            border-left: 5px solid #55c7e8;
+            margin-bottom: 0;
+        }
+
+        .stat-card h3 { margin-top: 0; }
+        .stat-number { font-size: 32px; font-weight: bold; }
+
+        .centre-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 14px;
+            margin-top: 15px;
+        }
+
+        .centre-item {
+            border: 1px solid #dbe3ee;
+            border-radius: 9px;
+            padding: 16px;
+            overflow-wrap: anywhere;
+        }
+
+        .centre-item h3 { margin-top: 0; }
+        .centre-item p { line-height: 1.5; }
+
+        #message {
+            margin: 18px 0;
+            padding: 13px;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        #message.error { background: #fee2e2; color: #991b1b; }
+        #message.success { background: #dcfce7; color: #166534; }
+        #message.info { background: #e8eef7; color: #123c73; }
+
+        .help {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            color: #64748b;
+            padding: 28px 16px;
+        }
+
+        [hidden] { display: none !important; }
+
+        @media (max-width: 500px) {
+            section, .stat-card { padding: 17px; }
+            header h1 { font-size: 21px; }
+            button { max-width: 100%; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-content">
+        <div>
+            <h1>Health Centre Super Admin</h1>
+            <p>Central Management Portal</p>
+        </div>
+        <button id="logoutButton" class="logout" hidden>Sign Out</button>
+    </div>
+</header>
+
+<main>
+    <section>
+        <span class="status">SUPER ADMIN PORTAL</span>
+        <h2>Welcome to Super Admin</h2>
+        <p id="accessText">Checking your account permissions...</p>
+    </section>
+
+    <div id="dashboardContent" hidden>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total Health Centres</h3>
+                <div class="stat-number" id="totalCentres">0</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Active Health Centres</h3>
+                <div class="stat-number" id="activeCentres">0</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Active Admins</h3>
+                <div class="stat-number" id="activeAdmins">0</div>
+            </div>
+        </div>
+
+        <section>
+            <h2 id="centreFormHeading">Add a Health Centre</h2>
+
+            <form id="centreForm">
+                <label for="centreName">Health Centre Name</label>
+                <input id="centreName" maxlength="120"
+                       placeholder="e.g. Mugombwa Health Centre" required>
+
+                <label for="centreDistrict">District / Location</label>
+                <input id="centreDistrict" maxlength="120"
+                       placeholder="e.g. Gisagara" required>
+
+                <button id="addCentreButton" class="primary" type="submit">
+                    Add Health Centre
+                </button>
+
+                <button id="cancelCentreEditButton"
+                        class="secondary"
+                        type="button"
+                        hidden>
+                    Cancel Edit
+                </button>
+            </form>
+
+            <p class="help">
+                To correct a spelling mistake, select Edit on the relevant
+                health centre below. Its existing ID will remain unchanged.
+            </p>
+        </section>
+
+        <section>
+            <h2>Admin Management</h2>
+            <p>Assign an existing Admin account to a health centre.</p>
+
+            <form id="adminForm">
+                <label for="adminCentre">Select Health Centre</label>
+                <select id="adminCentre" required>
+                    <option value="">Loading health centres...</option>
+                </select>
+
+                <label for="adminEmail">Admin Email</label>
+                <input id="adminEmail" type="email"
+                       placeholder="Enter the Admin's Firebase email" required>
+
+                <label for="adminUid">Admin Firebase UID</label>
+                <input id="adminUid" type="text"
+                       placeholder="Paste the exact Firebase UID"
+                       maxlength="128" required>
+
+                <p class="help">
+                    The account must already exist in Firebase Authentication,
+                    and its userRoles document must already have role = admin.
+                    Verify the email and UID in Firebase Authentication before
+                    assigning the account. This form cannot verify that email
+                    and UID belong to the same person.
+                </p>
+
+                <button id="assignAdminButton" class="primary" type="submit">
+                    Assign Admin to Centre
+                </button>
+            </form>
+
+            <h3>Registered Admins</h3>
+            <button id="refreshAdminsButton" class="secondary" type="button">
+                Refresh Admin List
+            </button>
+
+            <div id="adminList" class="centre-list"></div>
+            <p id="adminListStatus" class="help"></p>
+        </section>
+
+        <section>
+            <h2>Registered Health Centres</h2>
+            <p class="help">
+                Edit a centre's name or location if entered incorrectly.
+                You can also suspend a centre or reactivate it.
+                Suspending a centre affects access for its assigned Admins and Staff.
+            </p>
+
+            <button id="refreshButton" class="secondary" type="button">
+                Refresh List
+            </button>
+
+            <p id="listStatus">Loading health centres...</p>
+            <div id="centreList" class="centre-list"></div>
+        </section>
+    </div>
+
+    <div id="message" role="status" aria-live="polite" hidden></div>
+</main>
+
+<footer>Health Centre Staff Portal</footer>
+
+<script type="module">
+    import { auth, db } from "./firebase.js";
+
+    import {
+        onAuthStateChanged,
+        signOut
+    } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+    import {
+        collection,
+        addDoc,
+        getDocs,
+        doc,
+        getDoc,
+        updateDoc,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+    const $ = id => document.getElementById(id);
+
+    let verifiedSuperAdmin = false;
+    let currentUserUid = null;
+    let busy = false;
+
+    // Identifies the centre currently being edited.
+    let editingCentreId = null;
+
+    function showMessage(text, type = "info") {
+        $("message").textContent = text;
+        $("message").className = type;
+        $("message").hidden = false;
+    }
+
+    function clearMessage() {
+        $("message").textContent = "";
+        $("message").className = "";
+        $("message").hidden = true;
+    }
+
+    async function verifySuperAdmin(user) {
+        const roleSnap = await getDoc(doc(db, "userRoles", user.uid));
+
+        return roleSnap.exists() &&
+               roleSnap.data().role === "superadmin";
+    }
+
+    function verifySession() {
+        return verifiedSuperAdmin &&
+               auth.currentUser &&
+               auth.currentUser.uid === currentUserUid;
+    }
+
+    function makeStatusBadge(status) {
+        const badge = document.createElement("span");
+        badge.className = "status";
+
+        if (status === "active") {
+            badge.classList.add("active");
+            badge.textContent = "ACTIVE";
+        } else if (
+            status === "suspended" ||
+            status === "inactive"
+        ) {
+            badge.classList.add("suspended");
+            badge.textContent =
+                status === "inactive" ? "INACTIVE" : "SUSPENDED";
+        } else {
+            badge.classList.add("unknown");
+            badge.textContent = status || "STATUS UNKNOWN";
+        }
+
+        return badge;
+    }
+
+    // Clear edit mode and return the form to Add Health Centre.
+    function cancelCentreEdit() {
+        editingCentreId = null;
+        $("centreForm").reset();
+        $("centreFormHeading").textContent = "Add a Health Centre";
+        $("addCentreButton").textContent = "Add Health Centre";
+        $("cancelCentreEditButton").hidden = true;
+    }
+
+    // Put a selected centre's current details into the form.
+    function startCentreEdit(centreId, centre) {
+        if (!verifySession()) {
+            showMessage("Super Admin verification is required.", "error");
+            return;
+        }
+
+        editingCentreId = centreId;
+
+        $("centreName").value = centre.name || "";
+        $("centreDistrict").value = centre.location || "";
+
+        $("centreFormHeading").textContent = "Edit Health Centre";
+        $("addCentreButton").textContent = "Save Changes";
+        $("cancelCentreEditButton").hidden = false;
+
+        clearMessage();
+
+        $("centreForm").scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+        $("centreName").focus();
+    }
+
+    async function loadCentres() {
+        if (!verifySession()) return;
+
+        $("listStatus").textContent = "Loading health centres...";
+        $("centreList").replaceChildren();
+        $("adminCentre").replaceChildren();
+
+        try {
+            const snapshot = await getDocs(collection(db, "healthCentres"));
+
+            $("totalCentres").textContent = snapshot.size;
+
+            let activeCount = 0;
+
+            const placeholder = document.createElement("option");
+            placeholder.value = "";
+            placeholder.textContent = "Choose a health centre";
+            $("adminCentre").appendChild(placeholder);
+
+            if (snapshot.empty) {
+                $("listStatus").textContent =
+                    "No health centres registered.";
+            } else {
+                $("listStatus").textContent = "";
+
+                snapshot.forEach(item => {
+                    const centre = item.data();
+                    const statusValue = centre.status || "unknown";
+
+                    const option = document.createElement("option");
+                    option.value = item.id;
+                    option.textContent = centre.name || item.id;
+
+                    if (statusValue !== "active") {
+                        option.disabled = true;
+                        option.textContent += " (Not active)";
+                    }
+
+                    $("adminCentre").appendChild(option);
+
+                    if (statusValue === "active") activeCount++;
+
+                    const card = document.createElement("article");
+                    card.className = "centre-item";
+
+                    const title = document.createElement("h3");
+                    title.textContent =
+                        centre.name || "Unnamed Health Centre";
+
+                    const location = document.createElement("p");
+                    location.textContent =
+                        "Location: " + (centre.location || "Not provided");
+
+                    const id = document.createElement("p");
+                    id.textContent = "Centre ID: " + item.id;
+
+                    const statusText = document.createElement("p");
+                    statusText.textContent = "Status: ";
+                    statusText.appendChild(makeStatusBadge(statusValue));
+
+                    // New Edit button.
+                    const editButton = document.createElement("button");
+                    editButton.type = "button";
+                    editButton.className = "secondary";
+                    editButton.textContent = "Edit Name / Location";
+
+                    editButton.addEventListener("click", () => {
+                        startCentreEdit(item.id, centre);
+                    });
+
+                    const toggleButton = document.createElement("button");
+                    toggleButton.type = "button";
+
+                    if (statusValue === "active") {
+                        toggleButton.className = "danger";
+                        toggleButton.textContent = "Suspend Centre";
+
+                        toggleButton.addEventListener("click", () => {
+                            changeCentreStatus(
+                                item.id,
+                                centre.name,
+                                "suspended"
+                            );
+                        });
+                    } else {
+                        toggleButton.className = "success-button";
+                        toggleButton.textContent = "Activate Centre";
+
+                        toggleButton.addEventListener("click", () => {
+                            changeCentreStatus(
+                                item.id,
+                                centre.name,
+                                "active"
+                            );
+                        });
+                    }
+
+                    card.append(
+                        title,
+                        location,
+                        id,
+                        statusText,
+                        editButton,
+                        toggleButton
+                    );
+
+                    $("centreList").appendChild(card);
+                });
+            }
+
+            $("activeCentres").textContent = activeCount;
+        } catch (error) {
+            console.error(error);
+            $("listStatus").textContent =
+                "Could not load centres. Check Firestore Rules and Console.";
+        }
+    }
+
+    async function changeCentreStatus(centreId, centreName, newStatus) {
+        if (!verifySession() || busy) {
+            showMessage("Super Admin verification is required.", "error");
+            return;
+        }
+
+        const action = newStatus === "active" ? "activate" : "suspend";
+
+        if (!confirm(
+            "Are you sure you want to " + action + " " +
+            (centreName || "this health centre") + "?"
+        )) {
+            return;
+        }
+
+        busy = true;
+
+        try {
+            await updateDoc(doc(db, "healthCentres", centreId), {
+                status: newStatus,
+                statusUpdatedAt: serverTimestamp(),
+                statusUpdatedBy: currentUserUid
+            });
+
+            showMessage(
+                (centreName || "Health centre") + " is now " +
+                newStatus + ".",
+                "success"
+            );
+
+            await loadCentres();
+            await loadAdmins();
+        } catch (error) {
+            console.error(error);
+            showMessage(
+                "Could not change centre status: " + error.message,
+                "error"
+            );
+        } finally {
+            busy = false;
+        }
+    }
+
+    async function loadAdmins() {
+        if (!verifySession()) return;
+
+        $("adminList").replaceChildren();
+        $("adminListStatus").textContent = "Loading Admins...";
+
+        try {
+            const snapshot = await getDocs(collection(db, "userRoles"));
+            let count = 0;
+            let activeCount = 0;
+
+            snapshot.forEach(item => {
+                const userRole = item.data();
+                if (userRole.role !== "admin") return;
+
+                count++;
+
+                const card = document.createElement("article");
+                card.className = "centre-item";
+
+                const title = document.createElement("h3");
+                title.textContent = userRole.email || "Admin account";
+
+                const uid = document.createElement("p");
+                uid.textContent = "UID: " + item.id;
+
+                const centre = document.createElement("p");
+                centre.textContent =
+                    "Health Centre: " +
+                    (userRole.centreName || userRole.centreId || "Not assigned");
+
+                const statusValue = userRole.status || "status not set";
+
+                const statusText = document.createElement("p");
+                statusText.textContent = "Status: ";
+                statusText.appendChild(makeStatusBadge(statusValue));
+
+                const assigned = Boolean(userRole.centreId);
+
+                if (userRole.status === "active" && assigned) {
+                    activeCount++;
+                }
+
+                const toggleButton = document.createElement("button");
+                toggleButton.type = "button";
+
+                if (userRole.status === "active") {
+                    toggleButton.className = "danger";
+                    toggleButton.textContent = "Suspend Admin";
+
+                    toggleButton.addEventListener("click", () => {
+                        changeAdminStatus(item.id, userRole.email, "suspended");
+                    });
+                } else {
+                    toggleButton.className = "success-button";
+                    toggleButton.textContent = "Activate Admin";
+
+                    toggleButton.addEventListener("click", () => {
+                        changeAdminStatus(item.id, userRole.email, "active");
+                    });
+                }
+
+                card.append(title, uid, centre, statusText, toggleButton);
+                $("adminList").appendChild(card);
+            });
+
+            $("activeAdmins").textContent = activeCount;
+
+            $("adminListStatus").textContent = count
+                ? count + " Admin role(s) found."
+                : "No Admin accounts found.";
+        } catch (error) {
+            console.error(error);
+            $("adminListStatus").textContent =
+                "Could not load Admins. Check Firestore Rules.";
+        }
+    }
+
+    async function changeAdminStatus(uid, email, newStatus) {
+        if (!verifySession() || busy) {
+            showMessage("Super Admin verification is required.", "error");
+            return;
+        }
+
+        const action = newStatus === "active" ? "activate" : "suspend";
+
+        if (!confirm(
+            "Are you sure you want to " + action + " Admin " +
+            (email || uid) + "?"
+        )) {
+            return;
+        }
+
+        busy = true;
+
+        try {
+            const roleRef = doc(db, "userRoles", uid);
+            const roleSnap = await getDoc(roleRef);
+
+            if (!roleSnap.exists() || roleSnap.data().role !== "admin") {
+                throw new Error("The Admin role document could not be verified.");
+            }
+
+            await updateDoc(roleRef, {
+                status: newStatus,
+                statusUpdatedAt: serverTimestamp(),
+                statusUpdatedBy: currentUserUid
+            });
+
+            showMessage(
+                (email || "Admin") + " is now " + newStatus + ".",
+                "success"
+            );
+
+            await loadAdmins();
+        } catch (error) {
+            console.error(error);
+            showMessage(
+                "Could not change Admin status: " + error.message,
+                "error"
+            );
+        } finally {
+            busy = false;
+        }
+    }
+
+    onAuthStateChanged(auth, async user => {
+        verifiedSuperAdmin = false;
+        currentUserUid = null;
+
+        $("dashboardContent").hidden = true;
+        $("logoutButton").hidden = true;
+        clearMessage();
+
+        if (!user) {
+            $("accessText").textContent = "Please sign in.";
+            window.location.replace("login.html");
+            return;
+        }
+
+        try {
+            if (!(await verifySuperAdmin(user))) {
+                $("accessText").textContent = "Access denied.";
+                showMessage("This page is for Super Admin only.", "error");
+                await signOut(auth);
+                window.location.replace("login.html");
+                return;
+            }
+
+            verifiedSuperAdmin = true;
+            currentUserUid = user.uid;
+
+            $("accessText").textContent =
+                "Your Super Admin account has been verified.";
+
+            $("dashboardContent").hidden = false;
+            $("logoutButton").hidden = false;
+
+            await loadCentres();
+            await loadAdmins();
+        } catch (error) {
+            console.error(error);
+            $("accessText").textContent =
+                "Could not verify access. Check internet and Firestore Rules.";
+        }
+    });
+
+    // Add a new centre OR save changes to the centre being edited.
+    $("centreForm").addEventListener("submit", async event => {
+        event.preventDefault();
+        clearMessage();
+
+        if (!verifySession() || busy) {
+            showMessage("Super Admin verification is required.", "error");
+            return;
+        }
+
+        const name = $("centreName").value.trim();
+        const location = $("centreDistrict").value.trim();
+
+        if (!name || !location) {
+            showMessage("Enter both the centre name and location.", "error");
+            return;
+        }
+
+        busy = true;
+        $("addCentreButton").disabled = true;
+        $("cancelCentreEditButton").disabled = true;
+
+        try {
+            if (editingCentreId) {
+                /*
+                  Update only the existing name and location.
+                  The centre ID remains unchanged.
+                  No extra Firestore fields are added.
+                */
+                const centreRef = doc(
+                    db,
+                    "healthCentres",
+                    editingCentreId
+                );
+
+                await updateDoc(centreRef, {
+                    name: name,
+                    location: location
+                });
+
+                showMessage(
+                    "Health centre details updated successfully.",
+                    "success"
+                );
+
+                cancelCentreEdit();
+            } else {
+                await addDoc(collection(db, "healthCentres"), {
+                    name,
+                    location,
+                    status: "active",
+                    createdBy: currentUserUid,
+                    createdAt: serverTimestamp()
+                });
+
+                $("centreForm").reset();
+
+                showMessage(
+                    "Health centre added successfully.",
+                    "success"
+                );
+            }
+
+            await loadCentres();
+        } catch (error) {
+            console.error(error);
+
+            showMessage(
+                "Could not save health centre: " +
+                (error.code || error.message),
+                "error"
+            );
+        } finally {
+            busy = false;
+            $("addCentreButton").disabled = false;
+            $("cancelCentreEditButton").disabled = false;
+        }
+    });
+
+    $("cancelCentreEditButton").addEventListener("click", () => {
+        cancelCentreEdit();
+        clearMessage();
+    });
+
+    $("adminForm").addEventListener("submit", async event => {
+        event.preventDefault();
+        clearMessage();
+
+        if (!verifySession() || busy) {
+            showMessage("Super Admin verification is required.", "error");
+            return;
+        }
+
+        const centreId = $("adminCentre").value;
+        const email = $("adminEmail").value.trim().toLowerCase();
+        const uid = $("adminUid").value.trim();
+
+        if (!centreId || !email || !uid) {
+            showMessage(
+                "Choose a centre and enter the Admin email and UID.",
+                "error"
+            );
+            return;
+        }
+
+        busy = true;
+        $("assignAdminButton").disabled = true;
+
+        try {
+            const centreRef = doc(db, "healthCentres", centreId);
+            const centreSnap = await getDoc(centreRef);
+
+            if (!centreSnap.exists()) {
+                throw new Error("The selected health centre does not exist.");
+            }
+
+            const centre = centreSnap.data();
+
+            if (centre.status !== "active") {
+                throw new Error(
+                    "This health centre is not active. Activate it first."
+                );
+            }
+
+            const roleRef = doc(db, "userRoles", uid);
+            const roleSnap = await getDoc(roleRef);
+
+            if (!roleSnap.exists()) {
+                throw new Error(
+                    "No userRoles document exists for this UID. " +
+                    "Check the UID and create the Admin role first."
+                );
+            }
+
+            if (roleSnap.data().role !== "admin") {
+                throw new Error(
+                    "This account does not have role = admin. No changes were made."
+                );
+            }
+
+            await updateDoc(roleRef, {
+                email: email,
+                centreId: centreId,
+                centreName: centre.name || "",
+                status: "active",
+                assignedBy: currentUserUid,
+                assignedAt: serverTimestamp()
+            });
+
+            $("adminForm").reset();
+
+            showMessage(
+                email + " has been assigned to " +
+                (centre.name || "the selected centre") +
+                " and activated.",
+                "success"
+            );
+
+            await loadAdmins();
+        } catch (error) {
+            console.error("Admin assignment failed:", error);
+            showMessage(
+                "Admin assignment failed: " +
+                (error.code || error.message),
+                "error"
+            );
+        } finally {
+            busy = false;
+            $("assignAdminButton").disabled = false;
+        }
+    });
+
+    $("refreshButton").addEventListener("click", loadCentres);
+    $("refreshAdminsButton").addEventListener("click", loadAdmins);
+
+    $("logoutButton").addEventListener("click", async () => {
+        try {
+            await signOut(auth);
+            window.location.replace("login.html");
+        } catch (error) {
+            console.error(error);
+            showMessage("Could not sign out. Please try again.", "error");
+        }
+    });
+</script>
+
+</body>
+</html>
+```

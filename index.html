@@ -1,0 +1,890 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Health Centre Staff Portal</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 15px auto;
+            flex-wrap: wrap;
+        }
+
+        .language-switcher button {
+            padding: 9px 15px;
+            border: 1px solid #123c73;
+            border-radius: 6px;
+            background: white;
+            color: #123c73;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .language-switcher button.active {
+            background: #123c73;
+            color: white;
+        }
+
+        .slider {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            background: #f4f7fb;
+        }
+
+        .slide {
+            display: none;
+            position: relative;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .slide img {
+            display: block;
+            width: 100%;
+            height: 240px;
+            object-fit: contain;
+            object-position: center;
+            margin: 0 auto;
+            background: #f4f7fb;
+        }
+
+        .slide-content {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 15px 20px;
+            color: white;
+            background: linear-gradient(
+                transparent,
+                rgba(0, 0, 0, 0.8)
+            );
+        }
+
+        .slide-content h1 {
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+
+        .slide-content p {
+            margin: 0;
+        }
+
+        .slider-dots {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .slider-dots button {
+            width: 12px;
+            height: 12px;
+            margin: 4px;
+            border: none;
+            border-radius: 50%;
+            background: #bbb;
+            cursor: pointer;
+        }
+
+        .slider-dots button.active {
+            background: #123c73;
+        }
+
+        .centre-welcome {
+            display: none;
+            margin: 20px auto;
+            padding: 25px 20px;
+            width: calc(100% - 32px);
+            max-width: 1000px;
+            text-align: center;
+            color: #123c73;
+            background: #e8f5ff;
+            border: 1px solid #b7d9f5;
+            border-radius: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .centre-welcome.visible {
+            display: block;
+        }
+
+        .centre-welcome h2 {
+            margin: 0 0 10px;
+            font-size: 26px;
+        }
+
+        .centre-welcome p {
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        .welcome-section {
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        .welcome-section p {
+            max-width: 750px;
+            margin: 12px auto;
+            line-height: 1.7;
+        }
+
+        .site-footer {
+            padding: 20px;
+            text-align: center;
+            background: #123c73;
+            color: white;
+        }
+
+        .site-footer p {
+            margin: 0;
+        }
+
+        /* Role-based navigation */
+        #navMenu {
+            visibility: hidden;
+        }
+
+        #navMenu.ready {
+            visibility: visible;
+        }
+
+        #navMenu [hidden] {
+            display: none !important;
+        }
+
+        #homeLogoutButton {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            background: #b42318;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 4px;
+        }
+
+        #homeLogoutButton:hover {
+            background: #8f1d14;
+        }
+
+        #homeLogoutButton:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        @media (max-width: 600px) {
+            .slide img {
+                height: 200px;
+            }
+
+            .slide-content {
+                padding: 10px 12px;
+            }
+
+            .slide-content h1 {
+                font-size: 18px;
+                margin-bottom: 5px;
+            }
+
+            .slide-content p {
+                font-size: 13px;
+            }
+
+            .centre-welcome h2 {
+                font-size: 21px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .slide img {
+                height: 170px;
+            }
+
+            .slide-content h1 {
+                font-size: 16px;
+            }
+
+            .slide-content p {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER AND ROLE-BASED MENU -->
+    <header>
+        <div class="logo">
+            Health<span>Centre</span>
+        </div>
+
+        <button
+            type="button"
+            class="menu-toggle"
+            onclick="toggleMenu()"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+        >☰</button>
+
+        <nav id="navMenu">
+            <a href="index.html" class="active" data-i18n="home">
+                Home
+            </a>
+
+            <!-- STAFF LINKS: visible only to active Staff -->
+            <a href="dashboard.html"
+               id="staffDashboardLink"
+               data-i18n="dashboard"
+               hidden>
+                Staff Dashboard
+            </a>
+
+            <a href="handover.html"
+               id="handoverLink"
+               data-i18n="handover"
+               hidden>
+                Shift Handover
+            </a>
+
+            <a href="report.html"
+               id="reportLink"
+               data-i18n="report"
+               hidden>
+                Report Issue
+            </a>
+
+            <a href="contact.html"
+               id="contactLink"
+               data-i18n="contact"
+               hidden>
+                Contact
+            </a>
+
+            <!-- ADMIN LINK: visible only to active Admin -->
+            <a href="admin.html"
+               id="adminLink"
+               data-i18n="admin"
+               hidden>
+                Admin Dashboard
+            </a>
+
+            <!-- SUPERADMIN LINK -->
+            <a href="super-admin.html"
+               id="superAdminLink"
+               hidden>
+                SuperAdmin Dashboard
+            </a>
+
+            <!-- SIGNED-OUT USERS -->
+            <a href="login.html"
+               id="loginLink"
+               hidden>
+                Log In
+            </a>
+
+            <!-- SIGNED-IN USERS -->
+            <button
+                type="button"
+                id="homeLogoutButton"
+                hidden>
+                Log Out
+            </button>
+        </nav>
+    </header>
+
+    <!-- LANGUAGE SELECTION -->
+    <div class="language-switcher">
+        <span data-i18n="chooseLanguage">Language:</span>
+
+        <button
+            type="button"
+            id="englishBtn"
+            onclick="changeLanguage('en')">
+            🇬🇧 English
+        </button>
+
+        <button
+            type="button"
+            id="kinyarwandaBtn"
+            onclick="changeLanguage('rw')">
+            🇷🇼 Kinyarwanda
+        </button>
+    </div>
+
+    <!-- PHOTO SLIDER -->
+    <section class="slider">
+
+        <div class="slide active">
+            <img src="photo1.jpeg" alt="Health Centre">
+            <div class="slide-content">
+                <h1 data-i18n="slideTitle1">
+                    Welcome to Health Centre
+                </h1>
+                <p data-i18n="slideText1">
+                    A simple portal for staff communication.
+                </p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <img src="photo2.jpeg" alt="Health Centre staff">
+            <div class="slide-content">
+                <h1 data-i18n="slideTitle2">Working Together</h1>
+                <p data-i18n="slideText2">
+                    Improving communication among staff.
+                </p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <img src="photo3.jpeg" alt="Health services">
+            <div class="slide-content">
+                <h1 data-i18n="slideTitle3">
+                    Quality Health Services
+                </h1>
+                <p data-i18n="slideText3">
+                    Working together to improve our services.
+                </p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <img src="photo4.jpeg" alt="Health Centre activities">
+            <div class="slide-content">
+                <h1 data-i18n="slideTitle4">Staff Collaboration</h1>
+                <p data-i18n="slideText4">
+                    Sharing information and supporting one another.
+                </p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <img src="photo5.jpeg" alt="Health Centre environment">
+            <div class="slide-content">
+                <h1 data-i18n="slideTitle5">A Better Workplace</h1>
+                <p data-i18n="slideText5">
+                    Creating a supportive working environment.
+                </p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <img src="photo6.jpeg" alt="Health Centre team">
+            <div class="slide-content">
+                <h1 data-i18n="slideTitle6">One Team, One Goal</h1>
+                <p data-i18n="slideText6">
+                    Working together for better services.
+                </p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <img src="photo7.jpeg" alt="Health Centre">
+            <div class="slide-content">
+                <h1 data-i18n="slideTitle7">Welcome</h1>
+                <p data-i18n="slideText7">
+                    Thank you for being part of our team.
+                </p>
+            </div>
+        </div>
+
+    </section>
+
+    <div class="slider-dots" id="sliderDots"></div>
+
+    <!-- WELCOME MESSAGE FROM FIREBASE -->
+    <section
+        id="centreWelcome"
+        class="centre-welcome"
+        aria-live="polite"
+        hidden
+    >
+        <h2 id="centreWelcomeTitle"></h2>
+        <p id="centreWelcomeText"></p>
+    </section>
+
+    <!-- GENERAL WELCOME SECTION -->
+    <section class="welcome-section">
+        <h2 data-i18n="welcomeTitle">
+            Welcome to the Staff Portal
+        </h2>
+
+        <p data-i18n="welcomeText">
+            This portal helps health centre staff share information,
+            manage shift handovers, report workplace issues and
+            communicate with management.
+        </p>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <p>
+            © <span id="currentYear"></span>
+            <span data-i18n="footerText">
+                Health Centre Staff Portal. All rights reserved.
+            </span>
+        </p>
+    </footer>
+
+    <!-- LANGUAGE, MENU AND SLIDER -->
+    <script>
+        const translations = {
+            en: {
+                chooseLanguage: "Language:",
+                home: "Home",
+                dashboard: "Staff Dashboard",
+                handover: "Shift Handover",
+                report: "Report Issue",
+                contact: "Contact",
+                admin: "Admin Dashboard",
+
+                slideTitle1: "Welcome to Health Centre",
+                slideText1: "A simple portal for staff communication.",
+                slideTitle2: "Working Together",
+                slideText2: "Improving communication among staff.",
+                slideTitle3: "Quality Health Services",
+                slideText3: "Working together to improve our services.",
+                slideTitle4: "Staff Collaboration",
+                slideText4: "Sharing information and supporting one another.",
+                slideTitle5: "A Better Workplace",
+                slideText5: "Creating a supportive working environment.",
+                slideTitle6: "One Team, One Goal",
+                slideText6: "Working together for better services.",
+                slideTitle7: "Welcome",
+                slideText7: "Thank you for being part of our team.",
+
+                welcomeTitle: "Welcome to the Staff Portal",
+                welcomeText: "This portal helps health centre staff share information, manage shift handovers, report workplace issues and communicate with management.",
+                footerText: "Health Centre Staff Portal. All rights reserved."
+            },
+
+            rw: {
+                chooseLanguage: "Hitamo ururimi:",
+                home: "Ahabanza",
+                dashboard: "Imbonerahamwe y'abakozi",
+                handover: "Ihererekanya ry'akazi",
+                report: "Menyesha ikibazo",
+                contact: "Twandikire",
+                admin: "Dashboard y'Ubuyobozi",
+
+                slideTitle1: "Murakaza neza ku Kigo Nderabuzima",
+                slideText1: "Urubuga rworohereza abakozi guhanahana amakuru.",
+                slideTitle2: "Dukorane",
+                slideText2: "Guteza imbere imikoranire y'abakozi.",
+                slideTitle3: "Serivisi nziza z'ubuvuzi",
+                slideText3: "Dufatanyije kunoza serivisi dutanga.",
+                slideTitle4: "Imikoranire y'abakozi",
+                slideText4: "Gusangira amakuru no gufashanya.",
+                slideTitle5: "Ahantu heza ho gukorera",
+                slideText5: "Kubaka ahantu abakozi bakorera bishimye.",
+                slideTitle6: "Itsinda rimwe, intego imwe",
+                slideText6: "Dufatanyije gutanga serivisi nziza.",
+                slideTitle7: "Murakaza neza",
+                slideText7: "Murakoze kuba umwe mu bagize itsinda ryacu.",
+
+                welcomeTitle: "Murakaza neza ku rubuga rw'abakozi",
+                welcomeText: "Uru rubuga rufasha abakozi b'ikigo nderabuzima guhanahana amakuru, guhererekanya akazi hagati y'amashifuti, kumenyesha ibibazo byo ku kazi no kuvugana n'ubuyobozi.",
+                footerText: "Urubuga rw'abakozi b'Ikigo Nderabuzima. Uburenganzira bwose burabitswe."
+            }
+        };
+
+        function changeLanguage(language) {
+            if (!translations[language]) {
+                language = "en";
+            }
+
+            localStorage.setItem("healthCentreLanguage", language);
+
+            document.documentElement.lang =
+                language === "rw" ? "rw" : "en";
+
+            document.querySelectorAll("[data-i18n]").forEach(element => {
+                const key = element.getAttribute("data-i18n");
+
+                if (translations[language][key]) {
+                    element.textContent = translations[language][key];
+                }
+            });
+
+            document.getElementById("englishBtn")
+                .classList.toggle("active", language === "en");
+
+            document.getElementById("kinyarwandaBtn")
+                .classList.toggle("active", language === "rw");
+
+            document.getElementById("englishBtn")
+                .setAttribute("aria-pressed", String(language === "en"));
+
+            document.getElementById("kinyarwandaBtn")
+                .setAttribute("aria-pressed", String(language === "rw"));
+
+            window.dispatchEvent(
+                new CustomEvent("healthCentreLanguageChanged", {
+                    detail: { language }
+                })
+            );
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById("navMenu");
+            const button = document.querySelector(".menu-toggle");
+
+            if (!menu.classList.contains("ready")) {
+                return;
+            }
+
+            const isOpen = menu.classList.toggle("show");
+
+            button.setAttribute("aria-expanded", String(isOpen));
+        }
+
+        const slides = document.querySelectorAll(".slide");
+        const dotsContainer = document.getElementById("sliderDots");
+
+        let currentSlide = 0;
+        let sliderTimer;
+
+        slides.forEach((slide, index) => {
+            const dot = document.createElement("button");
+
+            dot.type = "button";
+            dot.setAttribute("aria-label", "Show photo " + (index + 1));
+
+            dot.addEventListener("click", () => {
+                showSlide(index);
+                startSlider();
+            });
+
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = dotsContainer.querySelectorAll("button");
+
+        function showSlide(index) {
+            slides[currentSlide].classList.remove("active");
+            dots[currentSlide].classList.remove("active");
+
+            currentSlide = index;
+
+            slides[currentSlide].classList.add("active");
+            dots[currentSlide].classList.add("active");
+        }
+
+        function nextSlide() {
+            showSlide((currentSlide + 1) % slides.length);
+        }
+
+        function startSlider() {
+            clearInterval(sliderTimer);
+            sliderTimer = setInterval(nextSlide, 5000);
+        }
+
+        document.getElementById("currentYear").textContent =
+            new Date().getFullYear();
+
+        changeLanguage(
+            localStorage.getItem("healthCentreLanguage") || "en"
+        );
+
+        showSlide(0);
+        startSlider();
+    </script>
+
+    <!-- FIREBASE: HEALTH CENTRE WELCOME MESSAGE -->
+    <script type="module">
+        import { auth, db } from "./firebase.js";
+
+        import {
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+        import {
+            doc,
+            getDoc
+        } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+        const welcomeBox = document.getElementById("centreWelcome");
+        const welcomeTitle = document.getElementById("centreWelcomeTitle");
+        const welcomeText = document.getElementById("centreWelcomeText");
+
+        let savedCentreName = "";
+        let savedRole = "";
+        let welcomeError = false;
+
+        function displayCentreWelcome() {
+            const language =
+                localStorage.getItem("healthCentreLanguage") || "en";
+
+            if (!savedRole && !welcomeError) {
+                welcomeBox.classList.remove("visible");
+                welcomeBox.hidden = true;
+                return;
+            }
+
+            welcomeBox.hidden = false;
+            welcomeBox.classList.add("visible");
+
+            if (welcomeError) {
+                welcomeTitle.textContent =
+                    language === "rw"
+                        ? "Ikaze ku rubuga rw'abakozi"
+                        : "Welcome to the Staff Portal";
+
+                welcomeText.textContent =
+                    language === "rw"
+                        ? "Ntibyashobotse kubona amakuru y'ikigo cyawe. Ongera ugerageze."
+                        : "We could not load your health centre information. Please try again.";
+                return;
+            }
+
+            if (savedRole === "superadmin") {
+                welcomeTitle.textContent =
+                    language === "rw"
+                        ? "Murakaza neza, SuperAdmin"
+                        : "Welcome, SuperAdmin";
+
+                welcomeText.textContent =
+                    language === "rw"
+                        ? "Genzura ibigo nderabuzima byanditswe ukoresheje dashboard ya SuperAdmin."
+                        : "Manage registered health centres from your SuperAdmin dashboard.";
+
+                return;
+            }
+
+            welcomeTitle.textContent =
+                language === "rw"
+                    ? "Murakaza neza kuri " + savedCentreName
+                    : "Welcome to " + savedCentreName;
+
+            welcomeText.textContent =
+                language === "rw"
+                    ? "Winjiye neza mu kigo nderabuzima ukoreramo. Murakaza neza!"
+                    : "You are signed in to your health centre. Welcome to the team!";
+        }
+
+        window.addEventListener(
+            "healthCentreLanguageChanged",
+            displayCentreWelcome
+        );
+
+        onAuthStateChanged(auth, async user => {
+            savedCentreName = "";
+            savedRole = "";
+            welcomeError = false;
+
+            if (!user) {
+                displayCentreWelcome();
+                return;
+            }
+
+            try {
+                const roleSnapshot = await getDoc(
+                    doc(db, "userRoles", user.uid)
+                );
+
+                if (!roleSnapshot.exists()) {
+                    displayCentreWelcome();
+                    return;
+                }
+
+                const roleData = roleSnapshot.data();
+
+                savedRole = String(roleData.role || "").toLowerCase();
+
+                if (savedRole === "superadmin") {
+                    displayCentreWelcome();
+                    return;
+                }
+
+                if (
+                    !["staff", "admin"].includes(savedRole) ||
+                    String(roleData.status || "").toLowerCase() !== "active" ||
+                    typeof roleData.centreId !== "string"
+                ) {
+                    savedRole = "";
+                    displayCentreWelcome();
+                    return;
+                }
+
+                const centreSnapshot = await getDoc(
+                    doc(db, "healthCentres", roleData.centreId)
+                );
+
+                if (
+                    !centreSnapshot.exists() ||
+                    String(centreSnapshot.data().status || "").toLowerCase()
+                        !== "active"
+                ) {
+                    savedRole = "";
+                    displayCentreWelcome();
+                    return;
+                }
+
+                savedCentreName =
+                    centreSnapshot.data().name || "Health Centre";
+
+                displayCentreWelcome();
+
+            } catch (error) {
+                console.error(
+                    "Could not load health centre welcome:",
+                    error
+                );
+
+                savedRole = "";
+                welcomeError = true;
+                displayCentreWelcome();
+            }
+        });
+    </script>
+
+    <!-- FIREBASE: ROLE-BASED NAVIGATION -->
+    <script type="module">
+        import { auth, db } from "./firebase.js";
+
+        import {
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+        import {
+            doc,
+            getDoc
+        } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+        const nav = document.getElementById("navMenu");
+
+        const staffLinkIds = [
+            "staffDashboardLink",
+            "handoverLink",
+            "reportLink",
+            "contactLink"
+        ];
+
+        const adminLink = document.getElementById("adminLink");
+        const superAdminLink = document.getElementById("superAdminLink");
+        const loginLink = document.getElementById("loginLink");
+        const logoutButton = document.getElementById("homeLogoutButton");
+
+        function hideAllRoleLinks() {
+            staffLinkIds.forEach(id => {
+                document.getElementById(id).hidden = true;
+            });
+
+            adminLink.hidden = true;
+            superAdminLink.hidden = true;
+            loginLink.hidden = true;
+            logoutButton.hidden = true;
+        }
+
+        function showLoginMenu() {
+            hideAllRoleLinks();
+
+            loginLink.hidden = false;
+            nav.classList.add("ready");
+        }
+
+        onAuthStateChanged(auth, async user => {
+            hideAllRoleLinks();
+
+            // Not signed in: Home and Log In only.
+            if (!user) {
+                showLoginMenu();
+                return;
+            }
+
+            try {
+                const roleSnapshot = await getDoc(
+                    doc(db, "userRoles", user.uid)
+                );
+
+                if (!roleSnapshot.exists()) {
+                    showLoginMenu();
+                    return;
+                }
+
+                const roleData = roleSnapshot.data();
+                const role = String(roleData.role || "").toLowerCase();
+                const status = String(roleData.status || "").toLowerCase();
+
+                // SuperAdmin gets their own dashboard, not Staff forms.
+                if (role === "superadmin") {
+                    superAdminLink.hidden = false;
+                    logoutButton.hidden = false;
+                    nav.classList.add("ready");
+                    return;
+                }
+
+                // Only active Admin and Staff with a centre can continue.
+                if (
+                    !["admin", "staff"].includes(role) ||
+                    status !== "active" ||
+                    typeof roleData.centreId !== "string"
+                ) {
+                    showLoginMenu();
+                    return;
+                }
+
+                const centreSnapshot = await getDoc(
+                    doc(db, "healthCentres", roleData.centreId)
+                );
+
+                if (
+                    !centreSnapshot.exists() ||
+                    String(centreSnapshot.data().status || "").toLowerCase()
+                        !== "active"
+                ) {
+                    showLoginMenu();
+                    return;
+                }
+
+                if (role === "admin") {
+                    // Admin sees Home, Admin Dashboard and Log Out.
+                    adminLink.hidden = false;
+                } else {
+                    // Staff sees the Staff Dashboard and Staff forms.
+                    staffLinkIds.forEach(id => {
+                        document.getElementById(id).hidden = false;
+                    });
+                }
+
+                logoutButton.hidden = false;
+                nav.classList.add("ready");
+
+            } catch (error) {
+                console.error("Navigation role check failed:", error);
+                showLoginMenu();
+            }
+        });
+
+        logoutButton.addEventListener("click", async () => {
+            logoutButton.disabled = true;
+
+            try {
+                await signOut(auth);
+                window.location.replace("login.html");
+            } catch (error) {
+                console.error("Logout failed:", error);
+
+                alert("Could not log out. Please try again.");
+
+                logoutButton.disabled = false;
+            }
+        });
+    </script>
+
+</body>
+</html>
+```

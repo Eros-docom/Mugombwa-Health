@@ -1,0 +1,604 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Centre - Staff Login</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            padding: 28px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, .1);
+        }
+
+        h1 { text-align: center; color: #087f8c; }
+        .subtitle { text-align: center; color: #64748b; }
+
+        label {
+            display: block;
+            margin: 16px 0 7px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 16px;
+            background: white;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 16px;
+            padding: 12px;
+            border: 0;
+            border-radius: 6px;
+            background: #087f8c;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover { background: #066873; }
+        button:disabled { opacity: .6; cursor: wait; }
+        .secondary { background: #475569; }
+        .link-row { margin-top: 14px; text-align: center; }
+        a { color: #087f8c; text-decoration: none; }
+
+        /* Password field and eye button */
+        .password-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-wrap input {
+            width: 100%;
+            padding-right: 52px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 5px;
+            transform: translateY(-50%);
+            width: 42px;
+            height: 42px;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            color: #475569;
+            border: none;
+            cursor: pointer;
+        }
+
+        .password-toggle:hover {
+            background: #f1f5f9;
+        }
+
+        .password-toggle svg {
+            width: 23px;
+            height: 23px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        #message {
+            display: none;
+            margin-top: 18px;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-wrap: anywhere;
+        }
+
+        #message.success {
+            display: block;
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        #message.error {
+            display: block;
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        #message.info {
+            display: block;
+            color: #1e40af;
+            background: #dbeafe;
+        }
+
+        [hidden] { display: none !important; }
+    </style>
+</head>
+
+<body>
+<main class="login-container">
+    <h1>Health Centre</h1>
+    <p class="subtitle">Staff Portal — Secure Access</p>
+
+    <form id="loginForm">
+        <label for="loginEmail">Email Address</label>
+        <input id="loginEmail" type="email"
+               autocomplete="username" required>
+
+        <label for="loginPassword">Password</label>
+        <div class="password-wrap">
+            <input id="loginPassword" type="password"
+                   autocomplete="current-password" required>
+            <button class="password-toggle" type="button"
+                    data-password-target="loginPassword"
+                    aria-label="Show password"
+                    aria-pressed="false"
+                    title="Show password">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </button>
+        </div>
+
+        <label>
+            <input id="rememberMe" type="checkbox" checked
+                   style="width:auto; margin-right:7px;">
+            Remember Me
+        </label>
+
+        <button id="loginBtn" type="submit">Log In</button>
+
+        <div class="link-row">
+            <a href="#" id="forgotPassword">Forgot Password?</a>
+        </div>
+    </form>
+
+    <button id="showRegister" class="secondary" type="button">
+        Create Staff Account
+    </button>
+
+    <form id="registerForm" hidden>
+        <label for="registerEmail">Email Address</label>
+        <input id="registerEmail" type="email"
+               autocomplete="email" required>
+
+        <label for="registerPassword">Create Password</label>
+        <div class="password-wrap">
+            <input id="registerPassword" type="password"
+                   minlength="6" autocomplete="new-password" required>
+            <button class="password-toggle" type="button"
+                    data-password-target="registerPassword"
+                    aria-label="Show password"
+                    aria-pressed="false"
+                    title="Show password">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </button>
+        </div>
+
+        <label for="centreSelect">Choose Your Health Centre</label>
+        <select id="centreSelect" required>
+            <option value="">Loading health centres...</option>
+        </select>
+
+        <button id="registerBtn" type="submit">
+            Create Staff Account
+        </button>
+
+        <button id="backToLogin" class="secondary" type="button">
+            Back to Login
+        </button>
+    </form>
+
+    <div id="message" role="status" aria-live="polite"></div>
+
+    <div class="link-row">
+        <a href="index.html">Back to Home</a>
+    </div>
+</main>
+
+<script type="module">
+    import { auth, db } from "./firebase.js";
+
+    import {
+        signInWithEmailAndPassword,
+        createUserWithEmailAndPassword,
+        sendPasswordResetEmail,
+        setPersistence,
+        browserLocalPersistence,
+        browserSessionPersistence,
+        onAuthStateChanged,
+        signOut
+    } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+    import {
+        collection,
+        doc,
+        getDoc,
+        getDocs,
+        query,
+        where,
+        setDoc,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+    const $ = id => document.getElementById(id);
+
+    let busy = false;
+    let centresLoaded = false;
+
+    // Show/hide password buttons
+    document.querySelectorAll(".password-toggle").forEach(button => {
+        button.addEventListener("click", () => {
+            const input = $(button.dataset.passwordTarget);
+            const showing = input.type === "text";
+
+            input.type = showing ? "password" : "text";
+
+            button.setAttribute("aria-pressed", String(!showing));
+            button.setAttribute(
+                "aria-label",
+                showing ? "Show password" : "Hide password"
+            );
+            button.title = showing ? "Show password" : "Hide password";
+
+            button.innerHTML = showing
+                ? `<svg viewBox="0 0 24 24" aria-hidden="true">
+                       <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                       <circle cx="12" cy="12" r="3"/>
+                   </svg>`
+                : `<svg viewBox="0 0 24 24" aria-hidden="true">
+                       <path d="M3 3l18 18"/>
+                       <path d="M10.6 5.2A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-4 4.8"/>
+                       <path d="M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7a10.7 10.7 0 0 0 4-.8"/>
+                       <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>
+                   </svg>`;
+        });
+    });
+
+    function showMessage(text, type = "info") {
+        $("message").textContent = text;
+        $("message").className = type;
+    }
+
+    function clearMessage() {
+        $("message").textContent = "";
+        $("message").className = "";
+    }
+
+    function showLogin() {
+        $("loginForm").hidden = false;
+        $("registerForm").hidden = true;
+        $("showRegister").hidden = false;
+        clearMessage();
+    }
+
+    async function showRegister() {
+        $("loginForm").hidden = true;
+        $("registerForm").hidden = false;
+        $("showRegister").hidden = true;
+        clearMessage();
+
+        if (!centresLoaded) await loadCentres();
+    }
+
+    function friendlyError(error) {
+        console.error("Firebase error:", error.code, error.message);
+
+        const errors = {
+            "auth/invalid-email": "Enter a valid email address.",
+            "auth/invalid-credential": "Incorrect email or password.",
+            "auth/email-already-in-use":
+                "This email already has an account. Please log in.",
+            "auth/weak-password":
+                "Use a stronger password with at least 6 characters.",
+            "auth/too-many-requests":
+                "Too many attempts. Please wait and try again.",
+            "auth/network-request-failed":
+                "Check your internet connection.",
+            "auth/operation-not-allowed":
+                "Enable Email/Password sign-in in Firebase Authentication.",
+            "permission-denied":
+                "Firestore denied access. Check your Firestore Rules."
+        };
+
+        return errors[error.code] ||
+            "An error occurred. Check the browser Console.";
+    }
+
+    async function loadCentres() {
+        const select = $("centreSelect");
+        select.replaceChildren(new Option("Loading...", ""));
+
+        try {
+            const q = query(
+                collection(db, "healthCentres"),
+                where("status", "==", "active")
+            );
+
+            const snapshot = await getDocs(q);
+
+            select.replaceChildren(
+                new Option("Choose your health centre", "")
+            );
+
+            snapshot.forEach(item => {
+                const centre = item.data();
+
+                if (typeof centre.name === "string" &&
+                    centre.name.trim()) {
+                    select.add(new Option(centre.name, item.id));
+                }
+            });
+
+            if (snapshot.empty) {
+                showMessage(
+                    "No active health centres are available.",
+                    "error"
+                );
+                return;
+            }
+
+            centresLoaded = true;
+        } catch (error) {
+            console.error("Loading centres failed:", error);
+
+            select.replaceChildren(
+                new Option("Unable to load centres", "")
+            );
+
+            showMessage(
+                "Could not load health centres. Check Firestore Rules and internet.",
+                "error"
+            );
+        }
+    }
+
+    async function getUserRole(user) {
+        const roleSnap = await getDoc(
+            doc(db, "userRoles", user.uid)
+        );
+
+        if (!roleSnap.exists()) return null;
+
+        const data = roleSnap.data();
+
+        if (data.role === "superadmin") return data;
+
+        if (!["staff", "admin"].includes(data.role) ||
+            data.status !== "active" ||
+            typeof data.centreId !== "string") {
+            return { ...data, blocked: true };
+        }
+
+        const centreSnap = await getDoc(
+            doc(db, "healthCentres", data.centreId)
+        );
+
+        if (!centreSnap.exists()) {
+            return { ...data, blocked: true };
+        }
+
+        if (centreSnap.data().status !== "active") {
+            return { ...data, blocked: true, centreSuspended: true };
+        }
+
+        return data;
+    }
+
+    async function routeUser(user) {
+        const roleData = await getUserRole(user);
+
+        if (!roleData) {
+            await signOut(auth);
+            showMessage(
+                "No role was assigned to this account. Contact SuperAdmin.",
+                "error"
+            );
+            return;
+        }
+
+        if (roleData.blocked) {
+            await signOut(auth);
+
+            showMessage(
+                roleData.centreSuspended
+                    ? "This health centre is suspended. Contact SuperAdmin."
+                    : roleData.status === "pending"
+                        ? "Your account is awaiting approval."
+                        : "This account is not active.",
+                "error"
+            );
+            return;
+        }
+
+        if (roleData.role === "superadmin") {
+            window.location.replace("super-admin.html");
+        } else if (roleData.role === "admin") {
+            window.location.replace("admin.html");
+        } else {
+            window.location.replace("dashboard.html");
+        }
+    }
+
+    onAuthStateChanged(auth, async user => {
+        if (!user || busy) return;
+
+        busy = true;
+
+        try {
+            await routeUser(user);
+        } catch (error) {
+            console.error("Session verification failed:", error);
+            showMessage(
+                "Unable to verify access. Check Firestore Rules and Console.",
+                "error"
+            );
+        } finally {
+            busy = false;
+        }
+    });
+
+    $("showRegister").addEventListener("click", showRegister);
+    $("backToLogin").addEventListener("click", showLogin);
+
+    $("forgotPassword").addEventListener("click", async event => {
+        event.preventDefault();
+
+        const email = $("loginEmail").value.trim();
+
+        if (!email || !$("loginEmail").checkValidity()) {
+            showMessage("Enter your email address first.", "error");
+            return;
+        }
+
+        try {
+            await sendPasswordResetEmail(auth, email);
+            showMessage(
+                "If the account exists, a password reset email has been sent.",
+                "success"
+            );
+        } catch (error) {
+            showMessage(friendlyError(error), "error");
+        }
+    });
+
+    $("loginForm").addEventListener("submit", async event => {
+        event.preventDefault();
+        if (busy) return;
+
+        busy = true;
+        $("loginBtn").disabled = true;
+        $("loginBtn").textContent = "Checking account...";
+
+        try {
+            await setPersistence(
+                auth,
+                $("rememberMe").checked
+                    ? browserLocalPersistence
+                    : browserSessionPersistence
+            );
+
+            const credential = await signInWithEmailAndPassword(
+                auth,
+                $("loginEmail").value.trim(),
+                $("loginPassword").value
+            );
+
+            await routeUser(credential.user);
+        } catch (error) {
+            showMessage(friendlyError(error), "error");
+        } finally {
+            busy = false;
+            $("loginBtn").disabled = false;
+            $("loginBtn").textContent = "Log In";
+        }
+    });
+
+    $("registerForm").addEventListener("submit", async event => {
+        event.preventDefault();
+        if (busy) return;
+
+        const centreId = $("centreSelect").value;
+
+        if (!centreId) {
+            showMessage("Please choose your health centre.", "error");
+            return;
+        }
+
+        busy = true;
+        $("registerBtn").disabled = true;
+        $("registerBtn").textContent = "Creating account...";
+
+        let newUser = null;
+
+        try {
+            const centreSnap = await getDoc(
+                doc(db, "healthCentres", centreId)
+            );
+
+            if (!centreSnap.exists() ||
+                centreSnap.data().status !== "active") {
+                throw new Error("CENTRE_NOT_ACTIVE");
+            }
+
+            await setPersistence(auth, browserSessionPersistence);
+
+            const credential = await createUserWithEmailAndPassword(
+                auth,
+                $("registerEmail").value.trim(),
+                $("registerPassword").value
+            );
+
+            newUser = credential.user;
+
+            await setDoc(doc(db, "userRoles", newUser.uid), {
+                role: "staff",
+                centreId: centreId,
+                status: "active",
+                createdAt: serverTimestamp()
+            });
+
+            await signOut(auth);
+
+            showLogin();
+            showMessage(
+                "Account created! You can now log in as Staff.",
+                "success"
+            );
+
+        } catch (error) {
+            console.error("Registration failed:", error);
+
+            if (newUser && auth.currentUser?.uid === newUser.uid) {
+                try {
+                    await signOut(auth);
+                } catch (signOutError) {
+                    console.error(signOutError);
+                }
+            }
+
+            showMessage(
+                error.message === "CENTRE_NOT_ACTIVE"
+                    ? "That health centre is not active. Choose another."
+                    : friendlyError(error),
+                "error"
+            );
+
+        } finally {
+            busy = false;
+            $("registerBtn").disabled = false;
+            $("registerBtn").textContent = "Create Staff Account";
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,557 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Contact Us | Health Centre Staff Portal</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #243247;
+            background: linear-gradient(-45deg, #eaf4ff, #f4f7fb, #e0f7fa, #edf0ff);
+            background-size: 400% 400%;
+            animation: backgroundMove 16s ease infinite;
+        }
+
+        @keyframes backgroundMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .header {
+            position: relative;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 16px 5%;
+            color: white;
+            background: linear-gradient(110deg, #123c73, #176a91, #123c73);
+            background-size: 200% 200%;
+            animation: headerMove 10s ease infinite;
+            box-shadow: 0 4px 16px #123c7330;
+        }
+
+        @keyframes headerMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .logo span {
+            color: #55c7e8;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .language-btn,
+        .menu-btn {
+            padding: 9px 12px;
+            border: 1px solid #ffffffa8;
+            border-radius: 8px;
+            color: white;
+            background: #ffffff15;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .language-btn:hover,
+        .menu-btn:hover {
+            background: #ffffff30;
+        }
+
+        .menu-btn {
+            display: none;
+            font-size: 24px;
+        }
+
+        .header nav {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header nav a {
+            color: white;
+            text-decoration: none;
+            padding: 9px 0;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .header nav a:hover,
+        .header nav a.active {
+            color: #55c7e8;
+        }
+
+        .page-header {
+            padding: 42px 20px;
+            text-align: center;
+            background: #ffffffa8;
+            border-bottom: 1px solid white;
+        }
+
+        .page-header h1 {
+            margin: 0 0 12px;
+            color: #123c73;
+            font-size: clamp(27px, 4vw, 38px);
+        }
+
+        .page-header p {
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .contact-section {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+            width: 100%;
+            max-width: 1000px;
+            margin: 32px auto;
+            padding: 0 18px;
+        }
+
+        .contact-card,
+        .form-card {
+            padding: 26px;
+            background: #ffffffed;
+            border: 1px solid white;
+            border-radius: 18px;
+            box-shadow: 0 10px 35px #123c7318;
+            overflow-wrap: anywhere;
+        }
+
+        .contact-card {
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 35px #123c7325;
+        }
+
+        .contact-card h2,
+        .form-card h2 {
+            margin-top: 0;
+            color: #123c73;
+        }
+
+        .contact-card p,
+        .form-card p {
+            line-height: 1.8;
+        }
+
+        .form-section {
+            width: 100%;
+            max-width: 1000px;
+            margin: 32px auto;
+            padding: 0 18px;
+        }
+
+        .form-card iframe {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            border: none;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .contact-footer {
+            margin-top: 35px;
+            padding: 20px;
+            text-align: center;
+            background: #123c73;
+            color: white;
+        }
+
+        .contact-footer p {
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 900px) {
+            .header {
+                padding: 14px 5%;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .header nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                width: 100%;
+                padding: 12px 5% 18px;
+                background: #123c73;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+                box-shadow: 0 8px 14px #00000020;
+            }
+
+            .header nav.show {
+                display: flex;
+            }
+
+            .header nav a {
+                display: block;
+                width: 100%;
+                padding: 14px 0;
+                border-bottom: 1px solid #ffffff25;
+                font-size: 16px;
+            }
+
+            .contact-section {
+                grid-template-columns: 1fr;
+                margin-top: 20px;
+            }
+
+            .contact-card,
+            .form-card {
+                padding: 18px;
+            }
+
+            .form-section {
+                margin-top: 20px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .logo {
+                font-size: 21px;
+            }
+
+            .header-actions {
+                gap: 6px;
+            }
+
+            .language-btn,
+            .menu-btn {
+                padding: 8px 10px;
+            }
+
+            .page-header {
+                padding: 30px 16px;
+            }
+
+            .contact-card,
+            .form-card {
+                padding: 15px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+
+<body style="display:none;">
+
+    <header class="header">
+
+        <div class="logo">
+            Health<span>Centre</span>
+        </div>
+
+        <div class="header-actions">
+            <button type="button" class="language-btn" id="languageToggle">
+                Kinyarwanda
+            </button>
+
+            <button
+                type="button"
+                class="menu-btn"
+                id="menuToggle"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+                aria-controls="navMenu">
+                ☰
+            </button>
+        </div>
+
+        <nav id="navMenu">
+            <a href="index.html"
+               data-en="Home" data-rw="Ahabanza">Home</a>
+
+            <a href="dashboard.html"
+               data-en="Staff Dashboard"
+               data-rw="Urubuga rw'Abakozi">Staff Dashboard</a>
+
+            <a href="handover.html"
+               data-en="Shift Handover"
+               data-rw="Ihererekanya ry'Akazi">Shift Handover</a>
+
+            <a href="report.html"
+               data-en="Report Issue"
+               data-rw="Kumenyekanisha Ikibazo">Report Issue</a>
+
+            <a href="contact.html"
+               class="active"
+               data-en="Contact"
+               data-rw="Twandikire">Contact</a>
+
+            <a href="admin.html"
+               data-en="Admin"
+               data-rw="Ubuyobozi">Admin</a>
+        </nav>
+
+    </header>
+
+    <section class="page-header">
+        <h1 data-en="Contact Us" data-rw="Twandikire">
+            Contact Us
+        </h1>
+
+        <p
+            data-en="Send a message to the health centre administration."
+            data-rw="Ohereza ubutumwa ku buyobozi bw'ikigo nderabuzima.">
+            Send a message to the health centre administration.
+        </p>
+    </section>
+
+    <main>
+
+        <section class="contact-section">
+
+            <div class="contact-card">
+                <h2
+                    data-en="Health Centre Administration"
+                    data-rw="Ubuyobozi bw'Ikigo Nderabuzima">
+                    Health Centre Administration
+                </h2>
+
+                <p
+                    data-en="📍 Location: Your Health Centre"
+                    data-rw="📍 Aho giherereye: Ikigo Nderabuzima cyawe">
+                    📍 Location: Your Health Centre
+                </p>
+
+                <p
+                    data-en="📞 Phone: +250 7XX XXX XXX"
+                    data-rw="📞 Telefoni: +250 7XX XXX XXX">
+                    📞 Phone: +250 7XX XXX XXX
+                </p>
+
+                <p
+                    data-en="✉️ Email: example@email.com"
+                    data-rw="✉️ Imeyili: example@email.com">
+                    ✉️ Email: example@email.com
+                </p>
+            </div>
+
+            <div class="contact-card">
+                <h2
+                    data-en="Working Hours"
+                    data-rw="Amasaha y'Akazi">
+                    Working Hours
+                </h2>
+
+                <p
+                    data-en="Monday – Friday"
+                    data-rw="Kuwa Mbere – Kuwa Gatanu">
+                    Monday – Friday
+                </p>
+
+                <p>08:00 – 17:00</p>
+
+                <p
+                    data-en="Emergency services follow the centre's official schedule."
+                    data-rw="Serivisi z'ubutabazi zitangwa hakurikijwe gahunda yemewe y'ikigo.">
+                    Emergency services follow the centre's official schedule.
+                </p>
+            </div>
+
+        </section>
+
+        <section class="form-section">
+            <div class="form-card">
+
+                <h2
+                    data-en="Send Us a Message"
+                    data-rw="Twoherereze Ubutumwa">
+                    Send Us a Message
+                </h2>
+
+                <p
+                    data-en="Complete the form below to contact the administration."
+                    data-rw="Uzuza ifishi iri hasi kugira ngo wohereze ubutumwa ku buyobozi.">
+                    Complete the form below to contact the administration.
+                </p>
+
+                <iframe
+                    src="https://docs.google.com/forms/d/e/1FAIpQLSfE1tSTp_u5h1jp16fiSsQxNFfouCP6x1TzSute_n-Zu3oEkA/viewform?embedded=true"
+                    height="900"
+                    title="Contact Administration Form">
+                    Loading…
+                </iframe>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="contact-footer">
+        <p>
+            © <span id="currentYear">2026</span>
+            <span
+                data-en="Health Centre Staff Portal"
+                data-rw="Urubuga rw'Abakozi b'Ikigo Nderabuzima">
+                Health Centre Staff Portal
+            </span>
+        </p>
+    </footer>
+
+    <script>
+        const navMenu = document.getElementById("navMenu");
+        const menuToggle = document.getElementById("menuToggle");
+        const languageToggle = document.getElementById("languageToggle");
+
+        function applyLanguage(language) {
+            const selectedLanguage = language === "rw" ? "rw" : "en";
+
+            document.documentElement.lang = selectedLanguage;
+
+            document.querySelectorAll("[data-en][data-rw]").forEach(function (element) {
+                element.textContent = element.dataset[selectedLanguage];
+            });
+
+            languageToggle.textContent =
+                selectedLanguage === "en" ? "Kinyarwanda" : "English";
+
+            languageToggle.setAttribute(
+                "aria-label",
+                selectedLanguage === "en"
+                    ? "Switch to Kinyarwanda"
+                    : "Hindura ururimi mu Cyongereza"
+            );
+
+            localStorage.setItem("healthCentreLanguage", selectedLanguage);
+        }
+
+        languageToggle.addEventListener("click", function () {
+            const currentLanguage =
+                localStorage.getItem("healthCentreLanguage") || "en";
+
+            applyLanguage(currentLanguage === "en" ? "rw" : "en");
+        });
+
+        menuToggle.addEventListener("click", function () {
+            const isOpen = navMenu.classList.toggle("show");
+
+            menuToggle.setAttribute("aria-expanded", String(isOpen));
+            menuToggle.setAttribute(
+                "aria-label",
+                isOpen ? "Close navigation menu" : "Open navigation menu"
+            );
+        });
+
+        document.querySelectorAll("#navMenu a").forEach(function (link) {
+            link.addEventListener("click", function () {
+                navMenu.classList.remove("show");
+                menuToggle.setAttribute("aria-expanded", "false");
+            });
+        });
+
+        document.getElementById("currentYear").textContent =
+            new Date().getFullYear();
+
+        applyLanguage(localStorage.getItem("healthCentreLanguage") || "en");
+    </script>
+
+    <!-- FIREBASE ACCESS VERIFICATION: PRESERVED -->
+    <script type="module">
+        import { auth, db } from "./firebase.js";
+
+        import {
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+        import {
+            doc,
+            getDoc
+        } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.replace("login.html");
+                return;
+            }
+
+            try {
+                const roleRef = doc(db, "userRoles", user.uid);
+                const roleSnapshot = await getDoc(roleRef);
+
+                if (!roleSnapshot.exists()) {
+                    await signOut(auth);
+                    window.location.replace("login.html");
+                    return;
+                }
+
+                const role = roleSnapshot.data().role;
+
+                if (role !== "staff" && role !== "admin") {
+                    await signOut(auth);
+                    window.location.replace("login.html");
+                    return;
+                }
+
+                document.body.style.display = "";
+
+            } catch (error) {
+                console.error("Access verification failed:", error);
+
+                alert(
+                    "Your access could not be verified. Please sign in again."
+                );
+
+                try {
+                    await signOut(auth);
+                } finally {
+                    window.location.replace("login.html");
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

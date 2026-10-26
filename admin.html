@@ -1,0 +1,1059 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Health Centre</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            margin: 0;
+            background: #f4f7fb;
+            font-family: Arial, sans-serif;
+            color: #243247;
+        }
+
+        .admin-header {
+            background: #123c73;
+            color: white;
+            padding: 16px 4%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .admin-logo {
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        .admin-logo span {
+            color: #55c7e8;
+        }
+
+        .admin-header a {
+            color: white;
+            text-decoration: none;
+            margin-right: 14px;
+        }
+
+        .admin-container {
+            max-width: 1100px;
+            margin: 28px auto;
+            padding: 0 16px;
+        }
+
+        .welcome-card,
+        .admin-card {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 4px 15px #0000000d;
+        }
+
+        .welcome-card {
+            border-left: 5px solid #55c7e8;
+        }
+
+        h1, h2, h3 {
+            color: #123c73;
+        }
+
+        .centre-name {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin: 22px 0;
+        }
+
+        .admin-card p {
+            line-height: 1.6;
+            color: #526174;
+        }
+
+        .admin-button {
+            display: inline-block;
+            background: #123c73;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 7px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 4px 4px 4px 0;
+        }
+
+        .admin-button:hover {
+            background: #20579b;
+        }
+
+        .admin-button:disabled {
+            opacity: .6;
+            cursor: wait;
+        }
+
+        .logout-button,
+        .delete-button {
+            background: #b42318;
+        }
+
+        .logout-button:hover,
+        .delete-button:hover {
+            background: #8f1d14;
+        }
+
+        .secondary-button {
+            background: #e8f3ff;
+            color: #123c73;
+        }
+
+        .field {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            margin: 7px 0 14px;
+            font: inherit;
+            background: white;
+        }
+
+        textarea.field {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .status {
+            margin: 12px 0;
+            padding: 12px;
+            background: #eef5fb;
+            border-radius: 7px;
+            overflow-wrap: anywhere;
+        }
+
+        .error {
+            background: #fff0f0;
+            color: #a11;
+        }
+
+        .success {
+            background: #eaf8ee;
+            color: #176534;
+        }
+
+        .announcement {
+            border: 1px solid #dbe4ee;
+            border-left: 5px solid #55c7e8;
+            border-radius: 9px;
+            padding: 16px;
+            margin: 12px 0;
+            overflow-wrap: anywhere;
+        }
+
+        .announcement h3 {
+            margin-top: 0;
+        }
+
+        .announcement p {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            line-height: 1.6;
+        }
+
+        .muted {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        .staff-uid {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #667085;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        @media (max-width: 600px) {
+            .admin-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .admin-container {
+                margin-top: 18px;
+            }
+
+            .welcome-card,
+            .admin-card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="admin-header">
+    <div class="admin-logo">Health<span>Centre</span> Admin</div>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <button id="logoutButton"
+                class="admin-button logout-button"
+                type="button">
+            Log Out
+        </button>
+    </nav>
+</header>
+
+<div class="admin-container" id="statusMessage">
+    Checking administrator access...
+</div>
+
+<main class="admin-container" id="adminContent" hidden>
+
+    <section class="welcome-card">
+        <h1>Welcome, Health Centre Admin!</h1>
+
+        <p>
+            Review staff submissions in Google Sheets and publish
+            announcements for your health centre.
+        </p>
+
+        <p>
+            Logged-in account:
+            <strong id="adminEmail"></strong>
+        </p>
+
+        <p class="centre-name">
+            Health Centre:
+            <span id="centreName"></span>
+        </p>
+
+        <p id="adminStatus">Administrator access verified.</p>
+    </section>
+
+    <!-- GOOGLE SHEETS -->
+
+    <section class="admin-grid">
+
+        <article class="admin-card">
+            <h2>Handover Records</h2>
+            <p>
+                Open the Google Sheet containing staff shift handover
+                submissions.
+            </p>
+
+            <a class="admin-button sheet-link"
+               href="#"
+               data-sheet="handover">
+                Open Handover Records
+            </a>
+        </article>
+
+        <article class="admin-card">
+            <h2>Issue Reports</h2>
+            <p>
+                Review workplace issues, equipment problems and
+                maintenance reports in Google Sheets.
+            </p>
+
+            <a class="admin-button sheet-link"
+               href="#"
+               data-sheet="issues">
+                Open Issue Reports
+            </a>
+        </article>
+
+        <article class="admin-card">
+            <h2>Contact Messages</h2>
+            <p>
+                Read messages submitted through the Contact Us form.
+            </p>
+
+            <a class="admin-button sheet-link"
+               href="#"
+               data-sheet="contact">
+                Open Contact Messages
+            </a>
+        </article>
+
+    </section>
+
+    <!-- ANNOUNCEMENTS -->
+
+    <section class="admin-card">
+        <h2>Post an Announcement</h2>
+
+        <p class="muted">
+            Publish important information for staff at your health centre.
+        </p>
+
+        <form id="announcementForm">
+
+            <label for="announcementTitle">
+                <strong>Announcement title</strong>
+            </label>
+
+            <input
+                class="field"
+                id="announcementTitle"
+                type="text"
+                maxlength="150"
+                required
+                placeholder="e.g. Staff meeting"
+            >
+
+            <label for="announcementMessage">
+                <strong>Announcement message</strong>
+            </label>
+
+            <textarea
+                class="field"
+                id="announcementMessage"
+                maxlength="5000"
+                required
+                placeholder="Write the announcement for staff..."
+            ></textarea>
+
+            <button
+                class="admin-button"
+                id="saveAnnouncementButton"
+                type="submit">
+                Publish Announcement
+            </button>
+
+            <button
+                class="admin-button secondary-button"
+                id="cancelEditButton"
+                type="button"
+                hidden>
+                Cancel Edit
+            </button>
+
+        </form>
+
+        <div class="status" id="announcementStatus" role="status">
+            Ready to manage announcements.
+        </div>
+
+        <h2 style="margin-top:28px;">Your Centre's Announcements</h2>
+
+        <div id="announcementList">
+            Loading announcements...
+        </div>
+
+        <button
+            class="admin-button secondary-button"
+            id="refreshButton"
+            type="button">
+            Refresh Announcements
+        </button>
+    </section>
+
+    <!-- STAFF MANAGEMENT -->
+
+    <section class="admin-card" style="margin-top:22px;">
+        <h2>Staff Management</h2>
+
+        <p>
+            View staff accounts assigned to your health centre.
+            You can activate, suspend, or reject an account and correct
+            its assigned health centre.
+        </p>
+
+        <p class="muted">
+            Staff are currently identified by their Firebase UID because
+            their email addresses and names are not stored in userRoles.
+        </p>
+
+        <div id="staffStatus" class="status" role="status">
+            Loading staff accounts...
+        </div>
+
+        <div id="staffList">
+            Loading staff...
+        </div>
+
+        <button
+            class="admin-button secondary-button"
+            id="refreshStaffButton"
+            type="button">
+            Refresh Staff
+        </button>
+    </section>
+
+</main>
+
+<footer>&copy; 2026 Health Centre Staff Portal</footer>
+
+<script type="module">
+    import { auth, db } from "./firebase.js";
+
+    import {
+        onAuthStateChanged,
+        signOut
+    } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+    import {
+        collection,
+        addDoc,
+        getDoc,
+        doc,
+        query,
+        where,
+        getDocs,
+        updateDoc,
+        deleteDoc,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+    // Existing Google Sheets URLs.
+    const SHEET_URLS = {
+        handover: "https://docs.google.com/spreadsheets/d/1sO5lb-XA58OhwujextZgPAtdEOrvwOmDDY08lzLtrAc/edit?gid=652288322#gid=652288322",
+
+        issues: "https://docs.google.com/spreadsheets/d/1kYEs3Z34OiJUadgLzJ0jsJhJvxzhN9Hphe5N_xGTcnk/edit?gid=1299877700#gid=1299877700",
+
+        contact: "https://docs.google.com/spreadsheets/d/1YFmGl3cH8H2TQ1l5bwl9rggHy-X4Zpqr0b23qIJtmZg/edit?gid=1467861834#gid=1467861834"
+    };
+
+    const $ = id => document.getElementById(id);
+
+    const adminContent = $("adminContent");
+    const statusMessage = $("statusMessage");
+    const adminEmail = $("adminEmail");
+    const centreName = $("centreName");
+    const adminStatus = $("adminStatus");
+
+    const logoutButton = $("logoutButton");
+
+    const announcementForm = $("announcementForm");
+    const announcementTitle = $("announcementTitle");
+    const announcementMessage = $("announcementMessage");
+    const announcementStatus = $("announcementStatus");
+    const announcementList = $("announcementList");
+    const saveAnnouncementButton = $("saveAnnouncementButton");
+    const cancelEditButton = $("cancelEditButton");
+    const refreshButton = $("refreshButton");
+
+    const staffStatus = $("staffStatus");
+    const staffList = $("staffList");
+    const refreshStaffButton = $("refreshStaffButton");
+
+    let currentAdmin = null;
+    let currentCentreId = "";
+    let editingAnnouncementId = null;
+    let checking = false;
+    let activeCentres = [];
+
+    function showAnnouncementStatus(message, type = "") {
+        announcementStatus.className = "status";
+        if (type) announcementStatus.classList.add(type);
+        announcementStatus.textContent = message;
+    }
+
+    function showStaffStatus(message, type = "") {
+        staffStatus.className = "status";
+        if (type) staffStatus.classList.add(type);
+        staffStatus.textContent = message;
+    }
+
+    function showPageError(message) {
+        statusMessage.hidden = false;
+        statusMessage.className = "admin-container status error";
+        statusMessage.textContent = message;
+        adminContent.hidden = true;
+    }
+
+    // Configure the existing Google Sheets links.
+    document.querySelectorAll(".sheet-link").forEach(link => {
+        const url = SHEET_URLS[link.dataset.sheet];
+
+        if (url) {
+            link.href = url;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+        } else {
+            link.addEventListener("click", event => {
+                event.preventDefault();
+                alert("The Google Sheet URL has not been configured.");
+            });
+        }
+    });
+
+    // ANNOUNCEMENTS
+
+    function resetAnnouncementForm() {
+        editingAnnouncementId = null;
+        announcementForm.reset();
+        saveAnnouncementButton.textContent = "Publish Announcement";
+        cancelEditButton.hidden = true;
+    }
+
+    function renderAnnouncements(items) {
+        announcementList.replaceChildren();
+
+        if (items.length === 0) {
+            announcementList.textContent =
+                "No published announcements for this health centre yet.";
+            return;
+        }
+
+        items.forEach(item => {
+            const data = item.data;
+
+            const card = document.createElement("article");
+            card.className = "announcement";
+
+            const heading = document.createElement("h3");
+            heading.textContent = data.title || "Announcement";
+
+            const message = document.createElement("p");
+            message.textContent = data.message || "";
+
+            const published = document.createElement("p");
+            published.className = "muted";
+            published.textContent = "Status: Published";
+
+            const editButton = document.createElement("button");
+            editButton.type = "button";
+            editButton.className = "admin-button";
+            editButton.textContent = "Edit";
+
+            editButton.addEventListener("click", () => {
+                editingAnnouncementId = item.id;
+                announcementTitle.value = data.title || "";
+                announcementMessage.value = data.message || "";
+                saveAnnouncementButton.textContent = "Save Changes";
+                cancelEditButton.hidden = false;
+
+                showAnnouncementStatus(
+                    "Editing announcement. Make changes and click Save Changes."
+                );
+
+                announcementTitle.focus();
+
+                announcementForm.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            });
+
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className = "admin-button delete-button";
+            deleteButton.textContent = "Delete";
+
+            deleteButton.addEventListener("click", async () => {
+                if (!confirm(
+                    "Are you sure you want to delete this announcement?"
+                )) return;
+
+                deleteButton.disabled = true;
+
+                try {
+                    await deleteDoc(doc(db, "announcements", item.id));
+
+                    if (editingAnnouncementId === item.id) {
+                        resetAnnouncementForm();
+                    }
+
+                    showAnnouncementStatus(
+                        "Announcement deleted successfully.",
+                        "success"
+                    );
+
+                    await loadAnnouncements();
+                } catch (error) {
+                    console.error("Delete announcement error:", error);
+
+                    showAnnouncementStatus(
+                        "Could not delete announcement: " +
+                        (error.code || error.message),
+                        "error"
+                    );
+
+                    deleteButton.disabled = false;
+                }
+            });
+
+            card.append(
+                heading,
+                message,
+                published,
+                editButton,
+                deleteButton
+            );
+
+            announcementList.appendChild(card);
+        });
+    }
+
+    async function loadAnnouncements() {
+        if (!currentCentreId) return;
+
+        refreshButton.disabled = true;
+        announcementList.textContent = "Loading announcements...";
+
+        try {
+            const announcementsQuery = query(
+                collection(db, "announcements"),
+                where("centreId", "==", currentCentreId),
+                where("published", "==", true)
+            );
+
+            const snapshot = await getDocs(announcementsQuery);
+
+            const items = snapshot.docs.map(item => ({
+                id: item.id,
+                data: item.data()
+            }));
+
+            items.sort((a, b) => {
+                const dateA = a.data.createdAt?.toMillis?.() || 0;
+                const dateB = b.data.createdAt?.toMillis?.() || 0;
+                return dateB - dateA;
+            });
+
+            renderAnnouncements(items);
+        } catch (error) {
+            console.error("Load announcements error:", error);
+            announcementList.textContent =
+                "Could not load announcements: " +
+                (error.code || error.message);
+        } finally {
+            refreshButton.disabled = false;
+        }
+    }
+
+    announcementForm.addEventListener("submit", async event => {
+        event.preventDefault();
+
+        if (!currentAdmin || !currentCentreId) {
+            showAnnouncementStatus(
+                "Your Admin account has not been verified.",
+                "error"
+            );
+            return;
+        }
+
+        const title = announcementTitle.value.trim();
+        const message = announcementMessage.value.trim();
+
+        if (!title || !message) {
+            showAnnouncementStatus(
+                "Enter both the announcement title and message.",
+                "error"
+            );
+            return;
+        }
+
+        if (title.length > 150 || message.length > 5000) {
+            showAnnouncementStatus(
+                "The title or message exceeds the allowed length.",
+                "error"
+            );
+            return;
+        }
+
+        saveAnnouncementButton.disabled = true;
+
+        try {
+            if (editingAnnouncementId) {
+                await updateDoc(
+                    doc(db, "announcements", editingAnnouncementId),
+                    {
+                        title,
+                        message,
+                        published: true
+                    }
+                );
+
+                showAnnouncementStatus(
+                    "Announcement updated successfully.",
+                    "success"
+                );
+            } else {
+                await addDoc(collection(db, "announcements"), {
+                    title,
+                    message,
+                    published: true,
+                    createdAt: serverTimestamp(),
+                    createdBy: currentAdmin.uid,
+                    centreId: currentCentreId
+                });
+
+                showAnnouncementStatus(
+                    "Announcement published successfully.",
+                    "success"
+                );
+            }
+
+            resetAnnouncementForm();
+            await loadAnnouncements();
+        } catch (error) {
+            console.error("Save announcement error:", error);
+
+            showAnnouncementStatus(
+                "Could not save announcement: " +
+                (error.code || error.message),
+                "error"
+            );
+        } finally {
+            saveAnnouncementButton.disabled = false;
+        }
+    });
+
+    cancelEditButton.addEventListener("click", () => {
+        resetAnnouncementForm();
+        showAnnouncementStatus("Editing cancelled.");
+    });
+
+    refreshButton.addEventListener("click", loadAnnouncements);
+
+    // STAFF MANAGEMENT
+
+    async function loadActiveCentres() {
+        const centresQuery = query(
+            collection(db, "healthCentres"),
+            where("status", "==", "active")
+        );
+
+        const snapshot = await getDocs(centresQuery);
+
+        activeCentres = snapshot.docs.map(item => ({
+            id: item.id,
+            name: item.data().name || "Health Centre"
+        }));
+    }
+
+    async function loadStaff() {
+        if (!currentAdmin || !currentCentreId) return;
+
+        refreshStaffButton.disabled = true;
+        staffList.textContent = "Loading staff accounts...";
+
+        try {
+            await loadActiveCentres();
+
+            const staffQuery = query(
+                collection(db, "userRoles"),
+                where("centreId", "==", currentCentreId)
+            );
+
+            const snapshot = await getDocs(staffQuery);
+
+            const staffMembers = snapshot.docs
+                .map(item => ({
+                    uid: item.id,
+                    data: item.data()
+                }))
+                .filter(item => item.data.role === "staff")
+                .sort((a, b) => {
+                    const dateA = a.data.createdAt?.toMillis?.() || 0;
+                    const dateB = b.data.createdAt?.toMillis?.() || 0;
+                    return dateB - dateA;
+                });
+
+            staffList.replaceChildren();
+
+            if (staffMembers.length === 0) {
+                staffList.textContent =
+                    "No staff accounts are assigned to this health centre.";
+
+                showStaffStatus("Staff list loaded.", "success");
+                return;
+            }
+
+            staffMembers.forEach(member => {
+                const uid = member.uid;
+                const data = member.data;
+
+                const card = document.createElement("article");
+                card.className = "announcement";
+
+                const heading = document.createElement("h3");
+                heading.textContent = "Staff Account";
+
+                const uidText = document.createElement("p");
+                uidText.className = "muted staff-uid";
+                uidText.textContent = "UID: " + uid;
+
+                const statusLabel = document.createElement("label");
+                statusLabel.textContent = "Account status";
+                statusLabel.htmlFor = "staff-status-" + uid;
+
+                const statusSelect = document.createElement("select");
+                statusSelect.className = "field";
+                statusSelect.id = "staff-status-" + uid;
+
+                ["active", "suspended", "rejected"].forEach(value => {
+                    const option = document.createElement("option");
+                    option.value = value;
+                    option.textContent =
+                        value.charAt(0).toUpperCase() + value.slice(1);
+                    statusSelect.appendChild(option);
+                });
+
+                statusSelect.value = [
+                    "active", "suspended", "rejected"
+                ].includes(data.status) ? data.status : "suspended";
+
+                const centreLabel = document.createElement("label");
+                centreLabel.textContent = "Assigned health centre";
+                centreLabel.htmlFor = "staff-centre-" + uid;
+
+                const centreSelect = document.createElement("select");
+                centreSelect.className = "field";
+                centreSelect.id = "staff-centre-" + uid;
+
+                activeCentres.forEach(centre => {
+                    const option = document.createElement("option");
+                    option.value = centre.id;
+                    option.textContent = centre.name;
+                    centreSelect.appendChild(option);
+                });
+
+                centreSelect.value = data.centreId || currentCentreId;
+
+                const saveButton = document.createElement("button");
+                saveButton.type = "button";
+                saveButton.className = "admin-button";
+                saveButton.textContent = "Save Staff Changes";
+
+                saveButton.addEventListener("click", async () => {
+                    const newStatus = statusSelect.value;
+                    const newCentreId = centreSelect.value;
+
+                    if (![
+                        "active", "suspended", "rejected"
+                    ].includes(newStatus)) {
+                        showStaffStatus("Invalid account status.", "error");
+                        return;
+                    }
+
+                    if (!activeCentres.some(c => c.id === newCentreId)) {
+                        showStaffStatus(
+                            "Choose an active health centre.",
+                            "error"
+                        );
+                        return;
+                    }
+
+                    const changedCentre = newCentreId !== data.centreId;
+
+                    const confirmationText = changedCentre
+                        ? "This will transfer the staff account to another health centre. The staff member will disappear from this centre's list. Continue?"
+                        : "Save changes to this staff account?";
+
+                    if (!confirm(confirmationText)) return;
+
+                    saveButton.disabled = true;
+
+                    try {
+                        await updateDoc(
+                            doc(db, "userRoles", uid),
+                            {
+                                status: newStatus,
+                                centreId: newCentreId
+                            }
+                        );
+
+                        showStaffStatus(
+                            "Staff account updated successfully.",
+                            "success"
+                        );
+
+                        await loadStaff();
+                    } catch (error) {
+                        console.error("Staff update failed:", error);
+
+                        showStaffStatus(
+                            "Could not update staff: " +
+                            (error.code || error.message) +
+                            ". Check Firestore Rules.",
+                            "error"
+                        );
+
+                        saveButton.disabled = false;
+                    }
+                });
+
+                card.append(
+                    heading,
+                    uidText,
+                    statusLabel,
+                    statusSelect,
+                    centreLabel,
+                    centreSelect,
+                    saveButton
+                );
+
+                staffList.appendChild(card);
+            });
+
+            showStaffStatus(
+                "Loaded " + staffMembers.length + " staff account(s).",
+                "success"
+            );
+        } catch (error) {
+            console.error("Loading staff failed:", error);
+
+            staffList.textContent = "Could not load staff accounts.";
+
+            showStaffStatus(
+                "Could not load staff: " +
+                (error.code || error.message) +
+                ". Check Firestore Rules.",
+                "error"
+            );
+        } finally {
+            refreshStaffButton.disabled = false;
+        }
+    }
+
+    refreshStaffButton.addEventListener("click", loadStaff);
+
+    // VERIFY ROLE AND HEALTH CENTRE
+
+    onAuthStateChanged(auth, async user => {
+        if (checking) return;
+
+        if (!user) {
+            window.location.replace("login.html");
+            return;
+        }
+
+        checking = true;
+        adminContent.hidden = true;
+        statusMessage.hidden = false;
+        statusMessage.textContent = "Checking administrator access...";
+
+        try {
+            const roleSnapshot = await getDoc(
+                doc(db, "userRoles", user.uid)
+            );
+
+            if (!roleSnapshot.exists()) {
+                showPageError(
+                    "No account role was found. Contact SuperAdmin."
+                );
+                return;
+            }
+
+            const roleData = roleSnapshot.data();
+            const role = String(roleData.role || "").toLowerCase();
+            const accountStatus =
+                String(roleData.status || "").toLowerCase();
+
+            if (role === "superadmin") {
+                window.location.replace("super-admin.html");
+                return;
+            }
+
+            if (role !== "admin" || accountStatus !== "active") {
+                showPageError(
+                    "Access denied. This page is for active Admin accounts only."
+                );
+                return;
+            }
+
+            if (
+                !roleData.centreId ||
+                typeof roleData.centreId !== "string"
+            ) {
+                showPageError(
+                    "Your Admin account has no assigned centreId. Contact SuperAdmin."
+                );
+                return;
+            }
+
+            currentCentreId = roleData.centreId;
+            currentAdmin = user;
+
+            const centreSnapshot = await getDoc(
+                doc(db, "healthCentres", currentCentreId)
+            );
+
+            if (!centreSnapshot.exists()) {
+                showPageError(
+                    "The assigned health centre could not be found."
+                );
+                return;
+            }
+
+            const centreData = centreSnapshot.data();
+
+            if (
+                String(centreData.status || "").toLowerCase() !== "active"
+            ) {
+                showPageError(
+                    "Your assigned health centre is not active."
+                );
+                return;
+            }
+
+            adminEmail.textContent = user.email || "Admin";
+            centreName.textContent = centreData.name || "Health Centre";
+            adminStatus.textContent = "Administrator access verified.";
+
+            statusMessage.hidden = true;
+            adminContent.hidden = false;
+
+            await Promise.all([
+                loadAnnouncements(),
+                loadStaff()
+            ]);
+        } catch (error) {
+            console.error("Admin verification error:", error);
+
+            showPageError(
+                "Unable to verify administrator access: " +
+                (error.code || error.message)
+            );
+        } finally {
+            checking = false;
+        }
+    });
+
+    // LOG OUT
+
+    logoutButton.addEventListener("click", async () => {
+        logoutButton.disabled = true;
+
+        try {
+            await signOut(auth);
+            window.location.replace("login.html");
+        } catch (error) {
+            console.error("Logout error:", error);
+
+            alert(
+                "Could not log out: " +
+                (error.code || error.message)
+            );
+
+            logoutButton.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>
